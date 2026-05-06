@@ -1,5 +1,6 @@
 package com.pachedev.restoreserve.model.entity;
 
+import com.pachedev.restoreserve.model.enums.TableLocation;
 import com.pachedev.restoreserve.model.enums.TableStatus;
 
 import jakarta.persistence.Column;
@@ -34,5 +35,9 @@ public class RestaurantTable {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private TableStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "location", nullable = false)
+    private TableLocation location;
 
 }
