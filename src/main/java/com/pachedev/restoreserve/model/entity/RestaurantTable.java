@@ -26,11 +26,11 @@ public class RestaurantTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", length = 50)
+    @Column(name = "name", length = 50, nullable = false)
     private String name;
 
-    @Column(name = "guests_number")
-    private Integer guests;
+    @Column(name = "max_pax", nullable = false)
+    private Integer maxPax;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
