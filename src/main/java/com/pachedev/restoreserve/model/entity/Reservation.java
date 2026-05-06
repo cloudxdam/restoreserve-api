@@ -33,15 +33,18 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private Client user;
+    private Client client;
 
     @ManyToOne
     @JoinColumn(name = "table_id", nullable = false)
     private RestaurantTable table;
 
-    @CreationTimestamp
     @Column(name = "reservation_data")
     private LocalDateTime reservationDate;
+
+    @CreationTimestamp
+    @Column(name = "created_At")
+    private LocalDateTime createdAt;
 
     @Column(name = "number_of_guests")
     private Integer numberOfGuests;
