@@ -48,12 +48,17 @@ public class RestaurantTableService {
 
     public List<RestaurantTableResponseDTO> findAll() {
         List<RestaurantTable> tables = restaurantTableRepository.findAll();
+        List<RestaurantTableResponseDTO> response = toResponseList(tables);
+
+        return response;
+    }
+
+    private List<RestaurantTableResponseDTO> toResponseList(List<RestaurantTable> tables) {
         List<RestaurantTableResponseDTO> response = new ArrayList<>();
 
         for (RestaurantTable r : tables) {
             response.add(toResponseDTO(r));
         }
-
         return response;
     }
 
@@ -81,9 +86,15 @@ public class RestaurantTableService {
         restaurantTableRepository.delete(getTableById(id));
     }
 
+    public List<RestaurantTableResponseDTO> findByMaxPax(Integer pax) {
+        List<RestaurantTable> tables = restaurantTableRepository.findByMaxPaxGreaterThanEqual(pax);
+        List<RestaurantTableResponseDTO> response = toResponseList(tables);
+
+        return response;
+    }
+
     /*
      * TODO
-     * · findByMaxPax
      * · findByStatus
      * · findByLocation
      * · findByLocationAndStatus

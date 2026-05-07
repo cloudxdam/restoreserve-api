@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,7 +28,7 @@ public class RestaurantTableController {
     private final RestaurantTableService restaurantTableService;
 
     @PostMapping
-    public ResponseEntity<RestaurantTableResponseDTO> create(@Valid @RequestHeader RestaurantTableRequestDTO dto) {
+    public ResponseEntity<RestaurantTableResponseDTO> create(@Valid @RequestBody RestaurantTableRequestDTO dto) {
         RestaurantTableResponseDTO response = restaurantTableService.create(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -55,12 +54,17 @@ public class RestaurantTableController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
+        restaurantTableService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/capacity/{pax}")
+    public ResponseEntity<List<RestaurantTableResponseDTO>> findByMaxPax(@PathVariable Integer pax) {
+        return ResponseEntity.ok(restaurantTableService.findByMaxPax(pax));
     }
 
     /*
      * TODO
-     * · findByMaxPax
      * · findByStatus
      * · findByLocation
      * · findByLocationAndStatus

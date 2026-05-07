@@ -10,14 +10,12 @@ import com.pachedev.restoreserve.model.enums.TableStatus;
 
 public interface RestaurantTableRepository extends JpaRepository<RestaurantTable, Long> {
 
-    List<RestaurantTable> findByMaxPax(Integer pax);
+    List<RestaurantTable> findByMaxPaxGreaterThanEqual(Integer pax);
 
     List<RestaurantTable> findByStatus(TableStatus status);
 
     List<RestaurantTable> findByLocation(TableLocation location);
 
     List<RestaurantTable> findByLocationAndStatus(TableLocation location, TableStatus status);
-
-    
 
 }
