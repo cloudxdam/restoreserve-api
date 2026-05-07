@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-RestoreserveApplication<restoreserve>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.pachedev.restoreserve.RestoreserveApplication",
+            "projectName": "restoreserve",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

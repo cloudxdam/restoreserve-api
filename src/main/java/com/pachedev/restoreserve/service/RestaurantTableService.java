@@ -35,10 +35,15 @@ public class RestaurantTableService {
     }
 
     public RestaurantTableResponseDTO findById(Long id) {
-        RestaurantTable table = restaurantTableRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Mesa con id " + id + " no encontrada"));
+        RestaurantTable table = getTableById(id);
 
         return toResponseDTO(table);
+    }
+
+    private RestaurantTable getTableById(Long id) {
+        RestaurantTable table = restaurantTableRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Mesa con id " + id + " no encontrada"));
+        return table;
     }
 
     public List<RestaurantTableResponseDTO> findAll() {
@@ -60,10 +65,24 @@ public class RestaurantTableService {
                 table.getLocation());
     }
 
+    public RestaurantTableResponseDTO update(Long id, RestaurantTableRequestDTO dto) {
+        RestaurantTable table = getTableById(id);
+
+        table.setName(dto.name());
+        table.setMaxPax(dto.maxPax());
+        table.setLocation(dto.location());
+
+        RestaurantTable updatedTable = restaurantTableRepository.save(table);
+
+        return toResponseDTO(updatedTable);
+    }
+
+    public void delete(Long id) {
+        restaurantTableRepository.delete(getTableById(id));
+    }
+
     /*
      * TODO
-     * · update
-     * · delete
      * · findByMaxPax
      * · findByStatus
      * · findByLocation
