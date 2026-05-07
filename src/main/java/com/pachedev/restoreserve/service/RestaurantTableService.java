@@ -9,6 +9,7 @@ import com.pachedev.restoreserve.dto.RestaurantTableRequestDTO;
 import com.pachedev.restoreserve.dto.RestaurantTableResponseDTO;
 import com.pachedev.restoreserve.exception.ResourceNotFoundException;
 import com.pachedev.restoreserve.model.entity.RestaurantTable;
+import com.pachedev.restoreserve.model.enums.TableLocation;
 import com.pachedev.restoreserve.model.enums.TableStatus;
 import com.pachedev.restoreserve.repository.RestaurantTableRepository;
 
@@ -93,11 +94,24 @@ public class RestaurantTableService {
         return response;
     }
 
-    /*
-     * TODO
-     * · findByStatus
-     * · findByLocation
-     * · findByLocationAndStatus
-     */
+    public List<RestaurantTableResponseDTO> findByStatus(TableStatus status) {
+        List<RestaurantTable> tables = restaurantTableRepository.findByStatus(status);
+        List<RestaurantTableResponseDTO> response = toResponseList(tables);
 
+        return response;
+    }
+
+    public List<RestaurantTableResponseDTO> findByLocation(TableLocation location) {
+        List<RestaurantTable> tables = restaurantTableRepository.findByLocation(location);
+        List<RestaurantTableResponseDTO> response = toResponseList(tables);
+
+        return response;
+    }
+
+    public List<RestaurantTableResponseDTO> findByLocationAndStatus(TableLocation location, TableStatus status) {
+        List<RestaurantTable> tables = restaurantTableRepository.findByLocationAndStatus(location, status);
+        List<RestaurantTableResponseDTO> response = toResponseList(tables);
+
+        return response;
+    }
 }

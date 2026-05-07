@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pachedev.restoreserve.dto.RestaurantTableRequestDTO;
 import com.pachedev.restoreserve.dto.RestaurantTableResponseDTO;
+import com.pachedev.restoreserve.model.enums.TableLocation;
+import com.pachedev.restoreserve.model.enums.TableStatus;
 import com.pachedev.restoreserve.service.RestaurantTableService;
 
 import jakarta.validation.Valid;
@@ -63,10 +66,20 @@ public class RestaurantTableController {
         return ResponseEntity.ok(restaurantTableService.findByMaxPax(pax));
     }
 
-    /*
-     * TODO
-     * · findByStatus
-     * · findByLocation
-     * · findByLocationAndStatus
-     */
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<RestaurantTableResponseDTO>> findByStatus(@PathVariable TableStatus status) {
+        return ResponseEntity.ok(restaurantTableService.findByStatus(status));
+    }
+
+    @GetMapping("/location/{location}")
+    public ResponseEntity<List<RestaurantTableResponseDTO>> findByLocation(@PathVariable TableLocation location) {
+        return ResponseEntity.ok(restaurantTableService.findByLocation(location));
+    }
+
+    // '/location-status?location=SALON&status=AVAILABLE'
+    @GetMapping("/location-status")
+    public ResponseEntity<List<RestaurantTableResponseDTO>> findByLocationAndStatus(
+            @RequestParam TableLocation location, @RequestParam TableStatus status) {
+        return ResponseEntity.ok(restaurantTableService.findByLocationAndStatus(location, status));
+    }
 }
