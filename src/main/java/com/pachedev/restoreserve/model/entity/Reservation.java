@@ -33,7 +33,7 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private Client client;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "table_id", nullable = false)
