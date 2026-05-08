@@ -39,11 +39,11 @@ public class Reservation {
     @JoinColumn(name = "table_id", nullable = false)
     private RestaurantTable table;
 
-    @Column(name = "reservation_data")
+    @Column(name = "reservation_date", nullable = false)
     private LocalDateTime reservationDate;
 
     @CreationTimestamp
-    @Column(name = "created_At")
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "number_of_guests")

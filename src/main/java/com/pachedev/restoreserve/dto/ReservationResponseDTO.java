@@ -1,9 +1,13 @@
 package com.pachedev.restoreserve.dto;
 
-public class ReservationResponseDTO {
+import com.pachedev.restoreserve.model.enums.ReservationStatus;
 
-    /*
-     * TODO - Datos que devolvemos (id, tableName, customerName,
-     * dateTime, status).
-     */
+public record ReservationResponseDTO(
+        Long id,
+        String tableName,
+        String customerName,
+        String dateTime,
+        Integer numberOfGuests,
+        ReservationStatus status) {
+
 }

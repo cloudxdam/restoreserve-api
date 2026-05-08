@@ -1,10 +1,13 @@
 package com.pachedev.restoreserve.dto;
 
-public class ReservationRequestDTO {
+import java.time.LocalDateTime;
 
-    /*
-     * TODO - Datos necesarios para crear una reserva (tableId, userId,
-     * dateTime, guests).
-     */
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
+public record ReservationRequestDTO(
+        @NotNull(message = "el id del usuario es obligatorio") Long userId,
+        @NotNull(message = "el id de la mesa es obligatorio") Long tableId,
+        @NotNull(message = "la fecha de reserva es obligatoria") LocalDateTime reservationDate,
+        @NotNull(message = "el número de comensales es obligatorio") @Min(value = 1, message = "El mínimo de comensales es 1") Integer numberOfGuests) {
 }
