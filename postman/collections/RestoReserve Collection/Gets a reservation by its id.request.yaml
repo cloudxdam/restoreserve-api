@@ -1,0 +1,5 @@
+$kind: http-request
+name: Gets a reservation by its id
+url: http://localhost:8080/api/v1/reservations/1
+method: GET
+order: 1442191939044361

@@ -40,9 +40,9 @@ public class ReservationService {
             throw new BusinessLogicException("El número de comensales introducido supera la capacidad de la mesa");
         }
 
-        Reservation conflicReservation = findConflictingReservation(dto.tableId(), dto.reservationDate());
-        if (conflicReservation != null) {
-            LocalDateTime start = conflicReservation.getReservationDate();
+        Reservation conflictingReservation = findConflictingReservation(dto.tableId(), dto.reservationDate());
+        if (conflictingReservation != null) {
+            LocalDateTime start = conflictingReservation.getReservationDate();
             LocalDateTime end = start.plusHours(2);
             throw new BusinessLogicException("La mesa con id " + dto.tableId() + " está reservada de "
                     + start.toLocalTime() + " a " + end.toLocalTime()
@@ -87,6 +87,10 @@ public class ReservationService {
         return null;
     }
 
+    /*
+     * TODO (implementación provisional para tests) -> modificar cuando
+     * implementemos JWT para que devuelva las reservas según su rol (user o admin)
+     */
     public List<ReservationResponseDTO> findAll() {
         List<Reservation> reservations = reservationRepository.findAll();
         List<ReservationResponseDTO> response = toResponseList(reservations);
@@ -102,7 +106,42 @@ public class ReservationService {
         }
 
         return response;
-
     }
 
+    public ReservationResponseDTO findById(Long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Reserva con id " + id + " no encontrada"));
+
+        return toResponseDTO(reservation);
+    }
+
+    public List<ReservationResponseDTO> findByUserId(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("Usuario con id " + userId + " no encontrado");
+        }
+
+        List<Reservation> reservations = reservationRepository.findByUserId(userId);
+
+        return toResponseList(reservations);
+    }
+
+    public List<ReservationResponseDTO> findByStatus(ReservationStatus status) {
+        List<Reservation> reservations = reservationRepository.findByStatus(status);
+
+        return toResponseList(reservations);
+    }
+
+    public void cancelReservation(Long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Reserva con id " + id + " no encontrada"));
+
+        if (reservation.getStatus() == ReservationStatus.CANCELLED) {
+            throw new BusinessLogicException("La reserva con id " + id + " ya estaba cancelada");
+        }
+
+        reservation.setStatus(ReservationStatus.CANCELLED);
+
+        reservationRepository.save(reservation);
+
+    }
 }
