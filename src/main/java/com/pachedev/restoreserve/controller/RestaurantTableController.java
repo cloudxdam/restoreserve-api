@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/tables")
+@RequestMapping("/api/v1/tables")
 public class RestaurantTableController {
 
     private final RestaurantTableService restaurantTableService;

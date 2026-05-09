@@ -33,4 +33,14 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(errors);
     }
+
+    /**
+     * Maneja excepciones relacionadas con la lógica de negocio.
+     */
+    @ExceptionHandler(BusinessLogicException.class)
+    public ResponseEntity<ErrorResponse> handleBusinesLogic(BusinessLogicException ex) {
+        ErrorResponse error = new ErrorResponse("BUSINESS_LOGIC_ERROR", ex.getMessage(), LocalDateTime.now());
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
 }
