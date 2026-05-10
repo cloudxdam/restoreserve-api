@@ -12,11 +12,11 @@ import com.pachedev.restoreserve.exception.BusinessLogicException;
 import com.pachedev.restoreserve.exception.ResourceNotFoundException;
 import com.pachedev.restoreserve.model.entity.Reservation;
 import com.pachedev.restoreserve.model.entity.RestaurantTable;
-import com.pachedev.restoreserve.model.entity.User;
+import com.pachedev.restoreserve.model.entity.AppUser;
 import com.pachedev.restoreserve.model.enums.ReservationStatus;
 import com.pachedev.restoreserve.repository.ReservationRepository;
 import com.pachedev.restoreserve.repository.RestaurantTableRepository;
-import com.pachedev.restoreserve.repository.UserRepository;
+import com.pachedev.restoreserve.repository.AppUserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,11 +26,11 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final RestaurantTableRepository tableRepository;
-    private final UserRepository userRepository;
+    private final AppUserRepository userRepository;
 
     public ReservationResponseDTO create(ReservationRequestDTO dto) {
 
-        User user = userRepository.findById(dto.userId())
+        AppUser user = userRepository.findById(dto.userId())
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario con id " + dto.userId() + " no encontrado"));
 
         RestaurantTable table = tableRepository.findById(dto.tableId())
