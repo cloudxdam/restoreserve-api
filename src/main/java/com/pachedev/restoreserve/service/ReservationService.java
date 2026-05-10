@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +12,13 @@ import com.pachedev.restoreserve.dto.ReservationRequestDTO;
 import com.pachedev.restoreserve.dto.ReservationResponseDTO;
 import com.pachedev.restoreserve.exception.BusinessLogicException;
 import com.pachedev.restoreserve.exception.ResourceNotFoundException;
+import com.pachedev.restoreserve.model.entity.AppUser;
 import com.pachedev.restoreserve.model.entity.Reservation;
 import com.pachedev.restoreserve.model.entity.RestaurantTable;
-import com.pachedev.restoreserve.model.entity.AppUser;
 import com.pachedev.restoreserve.model.enums.ReservationStatus;
+import com.pachedev.restoreserve.repository.AppUserRepository;
 import com.pachedev.restoreserve.repository.ReservationRepository;
 import com.pachedev.restoreserve.repository.RestaurantTableRepository;
-import com.pachedev.restoreserve.repository.AppUserRepository;
 
 import lombok.RequiredArgsConstructor;
 
