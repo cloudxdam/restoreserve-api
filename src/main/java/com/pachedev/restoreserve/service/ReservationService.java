@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.pachedev.restoreserve.dto.ReservationRequestDTO;
@@ -26,11 +29,11 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final RestaurantTableRepository tableRepository;
-    private final AppUserRepository userRepository;
+    private final AppUserRepository appUserRepository;
 
     public ReservationResponseDTO create(ReservationRequestDTO dto) {
 
-        AppUser user = userRepository.findById(dto.userId())
+        AppUser user = appUserRepository.findById(dto.userId())
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario con id " + dto.userId() + " no encontrado"));
 
         RestaurantTable table = tableRepository.findById(dto.tableId())
@@ -87,15 +90,29 @@ public class ReservationService {
         return null;
     }
 
-    /*
-     * TODO (implementación provisional para tests) -> modificar cuando
-     * implementemos JWT para que devuelva las reservas según su rol (user o admin)
+    /**
+     * Devuelve las reservas según el rol del usuario autenticado.
+     * 
+     * ROLE_ADMIN -> todas las reservas.
+     * ROLE_USER -> solo sus reservas.
      */
     public List<ReservationResponseDTO> findAll() {
-        List<Reservation> reservations = reservationRepository.findAll();
-        List<ReservationResponseDTO> response = toResponseList(reservations);
 
-        return response;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = authentication.getName();
+
+        AppUser user = appUserRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+
+        List<Reservation> reservations = new ArrayList<>();
+
+        if (user.getRole().name().equals("ROLE_ADMIN")) {
+            reservations = reservationRepository.findAll();
+        } else {
+            reservations = reservationRepository.findByUserId(user.getId());
+        }
+        return toResponseList(reservations);
     }
 
     private List<ReservationResponseDTO> toResponseList(List<Reservation> reservations) {
@@ -116,7 +133,7 @@ public class ReservationService {
     }
 
     public List<ReservationResponseDTO> findByUserId(Long userId) {
-        if (!userRepository.existsById(userId)) {
+        if (!appUserRepository.existsById(userId)) {
             throw new ResourceNotFoundException("Usuario con id " + userId + " no encontrado");
         }
 
