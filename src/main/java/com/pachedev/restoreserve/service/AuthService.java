@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 
 import com.pachedev.restoreserve.dto.AuthRequestDTO;
 import com.pachedev.restoreserve.dto.AuthResponseDTO;
+import com.pachedev.restoreserve.dto.RegisterUserRequestDTO;
 import com.pachedev.restoreserve.exception.BusinessLogicException;
 import com.pachedev.restoreserve.exception.ResourceNotFoundException;
 import com.pachedev.restoreserve.model.entity.AppUser;
+import com.pachedev.restoreserve.model.enums.UserRole;
 import com.pachedev.restoreserve.repository.AppUserRepository;
 import com.pachedev.restoreserve.security.JwtService;
 
@@ -44,6 +46,31 @@ public class AuthService {
         String token = jwtService.generateToken(user.getUsername());
 
         return new AuthResponseDTO(token);
+    }
+
+    public String register(RegisterUserRequestDTO dto) {
+
+        if (appUserRepository.existsByUsername(dto.username())) {
+            throw new BusinessLogicException(
+                    "El nombre de usuario " + dto.username() + " ya está registrado. Elija otro.");
+        }
+
+        if (appUserRepository.existsByEmail(dto.email())) {
+            throw new BusinessLogicException("El email " + dto.email() + " ya está registrado. Introduzca otro.");
+        }
+
+        AppUser user = new AppUser();
+        user.setName(dto.name());
+        user.setUsername(dto.username());
+        user.setTelephone(dto.telephone());
+        user.setEmail(dto.email());
+        user.setPassword(passwordEncoder.encode(dto.password()));
+        user.setRole(UserRole.ROLE_USER);
+        user.setActive(true);
+
+        appUserRepository.save(user);
+
+        return "El usuario ha sido registrado correctamente";
     }
 
 }
