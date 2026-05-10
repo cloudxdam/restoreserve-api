@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +30,11 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ReservationResponseDTO> create(@Valid @RequestBody ReservationRequestDTO dto) {
-        ReservationResponseDTO response = reservationService.create(dto);
+
+        // Obtenemos el usuario del contexto de seguridad (JWT)
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        ReservationResponseDTO response = reservationService.create(dto, currentUsername);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

@@ -30,10 +30,10 @@ public class ReservationService {
     private final RestaurantTableRepository tableRepository;
     private final AppUserRepository appUserRepository;
 
-    public ReservationResponseDTO create(ReservationRequestDTO dto) {
+    public ReservationResponseDTO create(ReservationRequestDTO dto, String currentUsername) {
 
-        AppUser user = appUserRepository.findById(dto.userId())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario con id " + dto.userId() + " no encontrado"));
+        AppUser user = appUserRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario " + currentUsername + " no encontrado"));
 
         RestaurantTable table = tableRepository.findById(dto.tableId())
                 .orElseThrow(() -> new ResourceNotFoundException("Mesa con id " + dto.tableId() + " no encontrada"));
