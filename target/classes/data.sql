@@ -11,11 +11,11 @@ INSERT INTO restaurant_tables (name, max_pax, status, location)
 VALUES ('Mesa 4', 8, 'RESERVED', 'TERRACE');
 
 INSERT INTO users (name, telephone, email, user_name, password, role, active)
-VALUES ('Armiche Santana','6123456789','armiche@gmail.com','armymoves', '1234','ROLE_USER',true
+VALUES ('Armiche Santana','6123456789','armiche@gmail.com','armymoves', '$2a$12$UfijVlkvrmwpTGERWsfsCe.R5ZIPaJPCP7TmjsnRMYtE8USwgsixi','ROLE_USER',true
 );
 
 INSERT INTO users (name, telephone, email, user_name, password, role, active)
-VALUES ('Acaymo Bello','600000000','acaymo@gmail.com','admin', 'Admin1234','ROLE_ADMIN',true
+VALUES ('Acaymo Bello','600000000','acaymo@gmail.com','admin', '$2a$12$lAUz1WTEed/7SOsy.ew.OehjCeESngVWkgkc0fqRgZqeo/W4AwM..','ROLE_ADMIN',true
 );
 
 INSERT INTO reservations (user_id, table_id, reservation_date, created_at, number_of_guests, status)
