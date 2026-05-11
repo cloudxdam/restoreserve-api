@@ -49,11 +49,6 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.findById(id));
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ReservationResponseDTO>> findByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(reservationService.findByUserId(userId));
-    }
-
     @GetMapping("/status/{status}")
     public ResponseEntity<List<ReservationResponseDTO>> findByStatus(@PathVariable ReservationStatus status) {
         return ResponseEntity.ok(reservationService.findByStatus(status));

@@ -97,12 +97,7 @@ public class ReservationService {
      */
     public List<ReservationResponseDTO> findAll() {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        String username = authentication.getName();
-
-        AppUser user = appUserRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+        AppUser user = getUser();
 
         List<Reservation> reservations = new ArrayList<>();
 
@@ -134,18 +129,16 @@ public class ReservationService {
         return toResponseDTO(reservation);
     }
 
-    public List<ReservationResponseDTO> findByUserId(Long userId) {
-        if (!appUserRepository.existsById(userId)) {
-            throw new ResourceNotFoundException("Usuario con id " + userId + " no encontrado");
-        }
-
-        List<Reservation> reservations = reservationRepository.findByUserId(userId);
-
-        return toResponseList(reservations);
-    }
-
     public List<ReservationResponseDTO> findByStatus(ReservationStatus status) {
-        List<Reservation> reservations = reservationRepository.findByStatus(status);
+        AppUser user = getUser();
+
+        List<Reservation> reservations = new ArrayList<>();
+
+        if (user.getRole().name().equals("ROLE_ADMIN")) {
+            reservations = reservationRepository.findByStatus(status);
+        } else {
+            reservations = reservationRepository.findByUserIdAndStatus(user.getId(), status);
+        }
 
         return toResponseList(reservations);
     }
