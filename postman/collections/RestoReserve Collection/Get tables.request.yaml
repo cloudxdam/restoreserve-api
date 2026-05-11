@@ -1,0 +1,5 @@
+$kind: http-request
+name: Get tables
+url: ""
+method: GET
+order: 4477808826848290

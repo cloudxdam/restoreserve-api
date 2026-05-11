@@ -1,0 +1,13 @@
+$kind: http-request
+name: Get reservations
+url: http://localhost:8080/api/v1/reservations
+method: GET
+body:
+  type: json
+  content: ""
+auth:
+  credentials:
+    - key: token
+      value: eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc3ODUyODQ0OCwiZXhwIjoxNzc4NjE0ODQ4fQ.JRtbYGO9erQNUcgnmVtOvrSD-TbA81Unf8kYnUtB7rhEcZkjkasQnF5AEPYNCAZY
+  type: bearer
+order: 169061786500
