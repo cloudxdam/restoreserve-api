@@ -125,8 +125,11 @@ public class ReservationService {
     }
 
     public ReservationResponseDTO findById(Long id) {
-        Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Reserva con id " + id + " no encontrada"));
+        Reservation reservation = getReservation(id);
+
+        AppUser user = getUser();
+
+        validateReservationAccess(reservation, user);
 
         return toResponseDTO(reservation);
     }
@@ -148,8 +151,11 @@ public class ReservationService {
     }
 
     public void cancelReservation(Long id) {
-        Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Reserva con id " + id + " no encontrada"));
+        Reservation reservation = getReservation(id);
+
+        AppUser user = getUser();
+
+        validateReservationAccess(reservation, user);
 
         if (reservation.getStatus() == ReservationStatus.CANCELLED) {
             throw new BusinessLogicException("La reserva con id " + id + " ya estaba cancelada");
@@ -159,5 +165,26 @@ public class ReservationService {
 
         reservationRepository.save(reservation);
 
+    }
+
+    private void validateReservationAccess(Reservation reservation, AppUser user) {
+        if (!user.getRole().name().equals("ROLE_ADMIN") && !reservation.getUser().getId().equals(user.getId())) {
+            throw new BusinessLogicException("Su usuario no tiene permisos para acceder a la reserva especificada");
+        }
+    }
+
+    private AppUser getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        AppUser user = appUserRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario " + username + " no encontrado"));
+        return user;
+    }
+
+    private Reservation getReservation(Long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Reserva con id " + id + " no encontrada"));
+        return reservation;
     }
 }
