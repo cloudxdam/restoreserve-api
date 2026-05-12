@@ -32,6 +32,10 @@ public class ReservationService {
 
     public ReservationResponseDTO create(ReservationRequestDTO dto, String currentUsername) {
 
+        if (dto.reservationDate().isBefore(LocalDateTime.now())) {
+            throw new BusinessLogicException("La fecha y hora no pueden ser anteriores a la actual");
+        }
+
         AppUser user = appUserRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario " + currentUsername + " no encontrado"));
 
