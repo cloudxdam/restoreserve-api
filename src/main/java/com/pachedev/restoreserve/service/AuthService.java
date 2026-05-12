@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Servicio encargado de autenticar usuarios mediante JWT.
- * Comprueba que las credenciales introducidad sean correctas y si el login es
+ * Comprueba que las credenciales introducidas sean correctas y si el login es
  * válido genera un token para acceder a los endpoints protegidos de la API.
  */
 @Service
@@ -48,6 +48,13 @@ public class AuthService {
         return new AuthResponseDTO(token);
     }
 
+    /**
+     * Registra un nuevo usuario cliente validando que el nombre de usuario y el
+     * email no estén ya en uso.
+     *
+     * @param dto datos necesarios para registrar el nuevo usuario.
+     * @return mensaje de confirmación del registro realizado.
+     */
     public String register(RegisterUserRequestDTO dto) {
 
         if (appUserRepository.existsByUsername(dto.username())) {
