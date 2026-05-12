@@ -21,6 +21,9 @@ public class RestaurantTableService {
 
     private final RestaurantTableRepository restaurantTableRepository;
 
+    /**
+     * Crea una nueva mesa con estado inicial AVAILABLE.
+     */
     public RestaurantTableResponseDTO create(RestaurantTableRequestDTO dto) {
 
         RestaurantTable table = new RestaurantTable();
@@ -35,6 +38,9 @@ public class RestaurantTableService {
         return toResponseDTO(savedTable);
     }
 
+    /**
+     * Busca una mesa por su identificador.
+     */
     public RestaurantTableResponseDTO findById(Long id) {
         RestaurantTable table = getTableById(id);
 
@@ -47,6 +53,9 @@ public class RestaurantTableService {
         return table;
     }
 
+    /**
+     * Devuelve la lista completa de mesas registradas.
+     */
     public List<RestaurantTableResponseDTO> findAll() {
         List<RestaurantTable> tables = restaurantTableRepository.findAll();
         List<RestaurantTableResponseDTO> response = toResponseList(tables);
@@ -71,6 +80,9 @@ public class RestaurantTableService {
                 table.getLocation());
     }
 
+    /**
+     * Actualiza los datos principales de una mesa existente.
+     */
     public RestaurantTableResponseDTO update(Long id, RestaurantTableRequestDTO dto) {
         RestaurantTable table = getTableById(id);
 
@@ -87,6 +99,10 @@ public class RestaurantTableService {
         restaurantTableRepository.delete(getTableById(id));
     }
 
+    /**
+     * Devuelve las mesas cuya capacidad es mayor o igual al número de comensales
+     * indicado.
+     */
     public List<RestaurantTableResponseDTO> findByMaxPax(Integer pax) {
         List<RestaurantTable> tables = restaurantTableRepository.findByMaxPaxGreaterThanEqual(pax);
         List<RestaurantTableResponseDTO> response = toResponseList(tables);
@@ -94,6 +110,9 @@ public class RestaurantTableService {
         return response;
     }
 
+    /**
+     * Devuelve las mesas filtrando por estado.
+     */
     public List<RestaurantTableResponseDTO> findByStatus(TableStatus status) {
         List<RestaurantTable> tables = restaurantTableRepository.findByStatus(status);
         List<RestaurantTableResponseDTO> response = toResponseList(tables);
@@ -101,6 +120,9 @@ public class RestaurantTableService {
         return response;
     }
 
+    /**
+     * Devuelve las mesas filtrando por ubicación.
+     */
     public List<RestaurantTableResponseDTO> findByLocation(TableLocation location) {
         List<RestaurantTable> tables = restaurantTableRepository.findByLocation(location);
         List<RestaurantTableResponseDTO> response = toResponseList(tables);
@@ -108,6 +130,9 @@ public class RestaurantTableService {
         return response;
     }
 
+    /**
+     * Devuelve las mesas filtrando por ubicación y estado.
+     */
     public List<RestaurantTableResponseDTO> findByLocationAndStatus(TableLocation location, TableStatus status) {
         List<RestaurantTable> tables = restaurantTableRepository.findByLocationAndStatus(location, status);
         List<RestaurantTableResponseDTO> response = toResponseList(tables);

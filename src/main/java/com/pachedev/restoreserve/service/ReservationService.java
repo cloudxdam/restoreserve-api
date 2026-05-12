@@ -30,6 +30,13 @@ public class ReservationService {
     private final RestaurantTableRepository tableRepository;
     private final AppUserRepository appUserRepository;
 
+    /**
+     * Crea una reserva validando:
+     * - que la fecha sea en el futuro
+     * - capacidad de la mesa
+     * - que una mesa previamente reservada estará ocupada por dos horas, por lo
+     * que la hora de reserva solicitada no entrará en conflicto.
+     */
     public ReservationResponseDTO create(ReservationRequestDTO dto, String currentUsername) {
 
         if (dto.reservationDate().isBefore(LocalDateTime.now())) {
@@ -74,6 +81,10 @@ public class ReservationService {
 
     }
 
+    /**
+     * Comprueba si ya existe una reserva confirmada en la misma mesa dentro de la
+     * franja horaria de 2 horas.
+     */
     private Reservation findConflictingReservation(Long tableId, LocalDateTime requestedReservationTime) {
         List<Reservation> confirmedReservations = reservationRepository.findByTableIdAndStatus(tableId,
                 ReservationStatus.CONFIRMED);
@@ -123,6 +134,10 @@ public class ReservationService {
         return response;
     }
 
+    /**
+     * Devuelve una reserva por su id si el usuario autenticado tiene permisos para
+     * verla.
+     */
     public ReservationResponseDTO findById(Long id) {
         Reservation reservation = getReservation(id);
 
@@ -133,6 +148,10 @@ public class ReservationService {
         return toResponseDTO(reservation);
     }
 
+    /**
+     * Devuelve las reservas con el estado indicado aplicando restricciones según el
+     * rol del usuario autenticado.
+     */
     public List<ReservationResponseDTO> findByStatus(ReservationStatus status) {
         AppUser user = getUser();
 
@@ -147,6 +166,10 @@ public class ReservationService {
         return toResponseList(reservations);
     }
 
+    /**
+     * Cancela una reserva si el usuario autenticado tiene permisos para
+     * modificarla.
+     */
     public void cancelReservation(Long id) {
         Reservation reservation = getReservation(id);
 
@@ -164,12 +187,19 @@ public class ReservationService {
 
     }
 
+    /**
+     * Verifica que el usuario autenticado pueda acceder o modificar la reserva
+     * indicada.
+     */
     private void validateReservationAccess(Reservation reservation, AppUser user) {
         if (!user.getRole().name().equals("ROLE_ADMIN") && !reservation.getUser().getId().equals(user.getId())) {
             throw new BusinessLogicException("Su usuario no tiene permisos para acceder a la reserva especificada");
         }
     }
 
+    /**
+     * Obtiene el usuario autenticado actual a partir del contexto de seguridad.
+     */
     private AppUser getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -179,6 +209,9 @@ public class ReservationService {
         return user;
     }
 
+    /**
+     * Busca una reserva por su identificador o lanza una excepción si no existe.
+     */
     private Reservation getReservation(Long id) {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reserva con id " + id + " no encontrada"));

@@ -23,6 +23,10 @@ import com.pachedev.restoreserve.service.RestaurantTableService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Controlador encargado de gestionar las operaciones relacionadas con las
+ * mesas.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/tables")
@@ -30,6 +34,9 @@ public class RestaurantTableController {
 
     private final RestaurantTableService restaurantTableService;
 
+    /**
+     * Crea una nueva mesa en el sistema.
+     */
     @PostMapping
     public ResponseEntity<RestaurantTableResponseDTO> create(@Valid @RequestBody RestaurantTableRequestDTO dto) {
         RestaurantTableResponseDTO response = restaurantTableService.create(dto);
@@ -37,16 +44,25 @@ public class RestaurantTableController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    /**
+     * Busca una mesa por su identificador.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<RestaurantTableResponseDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(restaurantTableService.findById(id));
     }
 
+    /**
+     * Devuelve la lista completa de mesas que hay registradas.
+     */
     @GetMapping
     public ResponseEntity<List<RestaurantTableResponseDTO>> findAll() {
         return ResponseEntity.ok(restaurantTableService.findAll());
     }
 
+    /**
+     * Actualiza los datos de una mesa existente.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<RestaurantTableResponseDTO> update(@PathVariable Long id,
             @Valid @RequestBody RestaurantTableRequestDTO dto) {
@@ -55,28 +71,44 @@ public class RestaurantTableController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Elimina una mesa por su id.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         restaurantTableService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Devuelve las mesas cuya capacidad es suficiente para el número de comensales
+     * indicado.
+     */
     @GetMapping("/capacity/{pax}")
     public ResponseEntity<List<RestaurantTableResponseDTO>> findByMaxPax(@PathVariable Integer pax) {
         return ResponseEntity.ok(restaurantTableService.findByMaxPax(pax));
     }
 
+    /**
+     * Devuelve las mesas filtradas por estado.
+     */
     @GetMapping("/status/{status}")
     public ResponseEntity<List<RestaurantTableResponseDTO>> findByStatus(@PathVariable TableStatus status) {
         return ResponseEntity.ok(restaurantTableService.findByStatus(status));
     }
 
+    /**
+     * Devuelve las mesas filtradas por ubicación.
+     */
     @GetMapping("/location/{location}")
     public ResponseEntity<List<RestaurantTableResponseDTO>> findByLocation(@PathVariable TableLocation location) {
         return ResponseEntity.ok(restaurantTableService.findByLocation(location));
     }
 
-    // '/location-status?location=SALON&status=AVAILABLE'
+    /**
+     * Devuelve las mesas filtradas por ubicación y estado.
+     * '/location-status?location=SALON&status=AVAILABLE'
+     */
     @GetMapping("/location-status")
     public ResponseEntity<List<RestaurantTableResponseDTO>> findByLocationAndStatus(
             @RequestParam TableLocation location, @RequestParam TableStatus status) {

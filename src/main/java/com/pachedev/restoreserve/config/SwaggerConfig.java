@@ -9,9 +9,17 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 
+/**
+ * Configuración de OpenAPI/Swagger para documentar la API y definir el esquema
+ * JWT.
+ */
 @Configuration
 public class SwaggerConfig {
 
+    /**
+     * Define la información básica de la API y el esquema de seguridad bearer para
+     * Swagger.
+     */
     @Bean
     public OpenAPI customOpenAPI() {
 
