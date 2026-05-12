@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
  * Configuración de seguridad de la API:
  * - Define cómo se protegen los datos (hash).
  * - Configura la sesión como stateless mediante JWT.
- * - Declara qué usuarios pueden acceder los endpoints. * 
+ * - Declara qué usuarios pueden acceder los endpoints. *
  */
 @Configuration
 @EnableWebSecurity
@@ -58,7 +58,10 @@ public class SecurityConfig {
         return http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
-                        auth -> auth.requestMatchers("/api/v1/auth/login", "/api/v1/auth/register").permitAll()
+                        auth -> auth
+                                .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register", "/swagger-ui.html",
+                                        "/swagger-ui/**", "/v3/api-docs/**")
+                                .permitAll()
                                 .requestMatchers("/api/v1/tables/**").hasRole("ADMIN")
                                 .requestMatchers("/api/v1/reservations/**").hasAnyRole("USER", "ADMIN")
                                 .anyRequest().authenticated())

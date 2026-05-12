@@ -10,10 +10,12 @@ VALUES ('Mesa 3', 6, 'AVAILABLE', 'SALON');
 INSERT INTO restaurant_tables (name, max_pax, status, location)
 VALUES ('Mesa 4', 8, 'RESERVED', 'TERRACE');
 
+ -- test credentials-> username: armymoves - password: 1234
 INSERT INTO users (name, telephone, email, user_name, password, role, active)
 VALUES ('Armiche Santana','6123456789','armiche@gmail.com','armymoves', '$2a$12$UfijVlkvrmwpTGERWsfsCe.R5ZIPaJPCP7TmjsnRMYtE8USwgsixi','ROLE_USER',true
 );
 
+-- test credentials-> username: admin - password: Admin1234
 INSERT INTO users (name, telephone, email, user_name, password, role, active)
 VALUES ('Acaymo Bello','600000000','acaymo@gmail.com','admin', '$2a$12$lAUz1WTEed/7SOsy.ew.OehjCeESngVWkgkc0fqRgZqeo/W4AwM..','ROLE_ADMIN',true
 );
