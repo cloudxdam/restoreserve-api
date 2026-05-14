@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.pachedev.restoreserve.dto.ReservationRequestDTO;
 import com.pachedev.restoreserve.dto.ReservationResponseDTO;
+import com.pachedev.restoreserve.exception.BannedUserException;
 import com.pachedev.restoreserve.exception.BusinessLogicException;
 import com.pachedev.restoreserve.exception.ResourceNotFoundException;
 import com.pachedev.restoreserve.model.entity.AppUser;
@@ -40,12 +41,17 @@ public class ReservationService {
      */
     public ReservationResponseDTO create(ReservationRequestDTO dto, String currentUsername) {
 
+        AppUser user = appUserRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario " + currentUsername + " no encontrado"));
+
+        if (user.getStatus().equals(UserStatus.BANNED)) {
+            throw new BannedUserException(
+                    "El usuario se encuentra en estado BANNED debido a múltiples cancelaciones tardías");
+        }
+
         if (dto.reservationDate().isBefore(LocalDateTime.now())) {
             throw new BusinessLogicException("La fecha y hora no pueden ser anteriores a la actual");
         }
-
-        AppUser user = appUserRepository.findByUsername(currentUsername)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario " + currentUsername + " no encontrado"));
 
         RestaurantTable table = tableRepository.findById(dto.tableId())
                 .orElseThrow(() -> new ResourceNotFoundException("Mesa con id " + dto.tableId() + " no encontrada"));

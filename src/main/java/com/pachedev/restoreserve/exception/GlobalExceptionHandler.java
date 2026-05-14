@@ -43,4 +43,12 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(BannedUserException.class)
+    public ResponseEntity<ErrorResponse> handleBannedUser(BannedUserException ex) {
+        ErrorResponse error = new ErrorResponse("BANNED_USER_ERROR", ex.getMessage(), LocalDateTime.now());
+
+        return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
+
+    }
 }
