@@ -16,6 +16,7 @@ import com.pachedev.restoreserve.model.entity.AppUser;
 import com.pachedev.restoreserve.model.entity.Reservation;
 import com.pachedev.restoreserve.model.entity.RestaurantTable;
 import com.pachedev.restoreserve.model.enums.ReservationStatus;
+import com.pachedev.restoreserve.model.enums.UserStatus;
 import com.pachedev.restoreserve.repository.AppUserRepository;
 import com.pachedev.restoreserve.repository.ReservationRepository;
 import com.pachedev.restoreserve.repository.RestaurantTableRepository;
@@ -169,6 +170,10 @@ public class ReservationService {
     /**
      * Cancela una reserva si el usuario autenticado tiene permisos para
      * modificarla.
+     * 
+     * En caso de cancelación tardía o no-show, le sumamos 2 puntos de penalización
+     * al cliente.
+     * Cuando acumule más de 6 puntos, su estado pasará de ACTIVE a BANNED.
      */
     public void cancelReservation(Long id) {
         Reservation reservation = getReservation(id);
@@ -181,10 +186,24 @@ public class ReservationService {
             throw new BusinessLogicException("La reserva con id " + id + " ya estaba cancelada");
         }
 
+        LocalDateTime reservationTime = reservation.getReservationDate();
+        LocalDateTime limit = reservationTime.minusHours(2);
+
+        AppUser client = reservation.getUser();
+
+        if (LocalDateTime.now().isAfter(limit)) {
+            client.setPenalizationPoints(client.getPenalizationPoints() + 2);
+
+            if (client.getPenalizationPoints() > 6) {
+                client.setStatus(UserStatus.BANNED);
+            }
+
+            appUserRepository.save(client);
+        }
+
         reservation.setStatus(ReservationStatus.CANCELLED);
 
         reservationRepository.save(reservation);
-
     }
 
     /**
