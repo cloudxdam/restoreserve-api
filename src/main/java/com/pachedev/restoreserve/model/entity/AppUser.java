@@ -1,6 +1,7 @@
 package com.pachedev.restoreserve.model.entity;
 
 import com.pachedev.restoreserve.model.enums.UserRole;
+import com.pachedev.restoreserve.model.enums.UserStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,4 +48,10 @@ public class AppUser {
     @Column(name = "active", nullable = false)
     private Boolean active = true;
 
+    @Column(name = "penalization_points", nullable = false)
+    private Integer penalizationPoints;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_status", nullable = false)
+    private UserStatus status;
 }

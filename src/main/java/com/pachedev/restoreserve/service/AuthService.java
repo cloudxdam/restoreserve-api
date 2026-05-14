@@ -10,6 +10,7 @@ import com.pachedev.restoreserve.exception.BusinessLogicException;
 import com.pachedev.restoreserve.exception.ResourceNotFoundException;
 import com.pachedev.restoreserve.model.entity.AppUser;
 import com.pachedev.restoreserve.model.enums.UserRole;
+import com.pachedev.restoreserve.model.enums.UserStatus;
 import com.pachedev.restoreserve.repository.AppUserRepository;
 import com.pachedev.restoreserve.security.JwtService;
 
@@ -74,6 +75,8 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(dto.password()));
         user.setRole(UserRole.ROLE_USER);
         user.setActive(true);
+        user.setPenalizationPoints(0);
+        user.setStatus(UserStatus.ACTIVE);
 
         appUserRepository.save(user);
 
