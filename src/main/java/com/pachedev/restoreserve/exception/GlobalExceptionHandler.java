@@ -44,6 +44,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
+    /**
+     * Maneja la excepción lanzada al impedir que un usuario en estado BANNED
+     * realice una reserva     
+     */
     @ExceptionHandler(BannedUserException.class)
     public ResponseEntity<ErrorResponse> handleBannedUser(BannedUserException ex) {
         ErrorResponse error = new ErrorResponse("BANNED_USER_ERROR", ex.getMessage(), LocalDateTime.now());

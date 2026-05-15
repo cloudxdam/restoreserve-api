@@ -216,7 +216,7 @@ public class ReservationService {
      * Verifica que el usuario autenticado pueda acceder o modificar la reserva
      * indicada.
      */
-    private void validateReservationAccess(Reservation reservation, AppUser user) {
+    public void validateReservationAccess(Reservation reservation, AppUser user) {
         if (!user.getRole().name().equals("ROLE_ADMIN") && !reservation.getUser().getId().equals(user.getId())) {
             throw new BusinessLogicException("Su usuario no tiene permisos para acceder a la reserva especificada");
         }

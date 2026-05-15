@@ -62,7 +62,8 @@ public class SecurityConfig {
                                 .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register", "/swagger-ui.html",
                                         "/swagger-ui/**", "/v3/api-docs/**")
                                 .permitAll()
-                                .requestMatchers("/api/v1/tables/**").hasRole("ADMIN")
+                                .requestMatchers("/api/v1/tables/**", "/api/v1/users/**")
+                                .hasRole("ADMIN")
                                 .requestMatchers("/api/v1/reservations/**").hasAnyRole("USER", "ADMIN")
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
