@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
 
     /**
      * Maneja la excepción lanzada al impedir que un usuario en estado BANNED
-     * realice una reserva     
+     * realice una reserva
      */
     @ExceptionHandler(BannedUserException.class)
     public ResponseEntity<ErrorResponse> handleBannedUser(BannedUserException ex) {
@@ -54,5 +54,16 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
 
+    }
+
+    /**
+     * Maneja la excepción lanzada al impedir que un usuario reserve una mesa VIP
+     * sin serlo.
+     */
+    @ExceptionHandler(NotVipUserException.class)
+    public ResponseEntity<ErrorResponse> handleNotVip(NotVipUserException ex) {
+        ErrorResponse error = new ErrorResponse("NOT_VIP_USER", ex.getMessage(), LocalDateTime.now());
+
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 }

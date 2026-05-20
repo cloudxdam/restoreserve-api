@@ -40,4 +40,6 @@ public class RestaurantTable {
     @Column(name = "location", nullable = false)
     private TableLocation location;
 
+    @Column(name = "is_vip", nullable = false)
+    private Boolean isVip = false;
 }

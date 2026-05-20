@@ -1,14 +1,14 @@
-INSERT INTO restaurant_tables (name, max_pax, status, location)
-VALUES ('Mesa 1', 4, 'AVAILABLE', 'SALON');
+INSERT INTO restaurant_tables (name, max_pax, status, location, is_vip)
+VALUES ('Mesa 1', 4, 'AVAILABLE', 'SALON', false);
 
-INSERT INTO restaurant_tables (name, max_pax, status, location)
-VALUES ('Mesa 2', 2, 'RESERVED', 'TERRACE');
+INSERT INTO restaurant_tables (name, max_pax, status, location, is_vip)
+VALUES ('Mesa 2', 2, 'RESERVED', 'TERRACE', false);
 
-INSERT INTO restaurant_tables (name, max_pax, status, location)
-VALUES ('Mesa 3', 6, 'AVAILABLE', 'SALON');
+INSERT INTO restaurant_tables (name, max_pax, status, location, is_vip)
+VALUES ('Mesa 3', 6, 'AVAILABLE', 'SALON', false);
 
-INSERT INTO restaurant_tables (name, max_pax, status, location)
-VALUES ('Mesa 4', 8, 'RESERVED', 'TERRACE');
+INSERT INTO restaurant_tables (name, max_pax, status, location, is_vip)
+VALUES ('Mesa 4', 8, 'RESERVED', 'TERRACE', false);
 
  -- test credentials-> username: armymoves - password: 1234
 INSERT INTO users (name, telephone, email, user_name, password, role, active, penalization_points, user_status)

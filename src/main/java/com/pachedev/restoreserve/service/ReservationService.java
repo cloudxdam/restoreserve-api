@@ -12,6 +12,7 @@ import com.pachedev.restoreserve.dto.ReservationRequestDTO;
 import com.pachedev.restoreserve.dto.ReservationResponseDTO;
 import com.pachedev.restoreserve.exception.BannedUserException;
 import com.pachedev.restoreserve.exception.BusinessLogicException;
+import com.pachedev.restoreserve.exception.NotVipUserException;
 import com.pachedev.restoreserve.exception.ResourceNotFoundException;
 import com.pachedev.restoreserve.model.entity.AppUser;
 import com.pachedev.restoreserve.model.entity.Reservation;
@@ -55,6 +56,16 @@ public class ReservationService {
 
         RestaurantTable table = tableRepository.findById(dto.tableId())
                 .orElseThrow(() -> new ResourceNotFoundException("Mesa con id " + dto.tableId() + " no encontrada"));
+
+        if (dto.isVip() == true) {
+            boolean isVipUser = reservationRepository.findByStatus(ReservationStatus.CONFIRMED).size() > 3;
+
+            if (!isVipUser) {
+                throw new NotVipUserException("Sólo clientes habituales pueden reservar mesas VIP");
+            }
+
+            table.setIsVip(true);
+        }
 
         if (dto.numberOfGuests() > table.getMaxPax()) {
             throw new BusinessLogicException("El número de comensales introducido supera la capacidad de la mesa");
@@ -241,5 +252,38 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reserva con id " + id + " no encontrada"));
         return reservation;
+    }
+
+    /**
+     * Modifica el estado de una reserva a COMPLETED si han pasado más de dos horas
+     * de la hora de la reserva.
+     */
+    public void completeReservation(Long id) {
+
+        Reservation reservation = getReservation(id);
+
+        AppUser user = getUser();
+
+        validateReservationAccess(reservation, user);
+
+        if (reservation.getStatus() == ReservationStatus.COMPLETED) {
+            throw new BusinessLogicException("La reserva con id " + id + " ya estaba completada");
+        }
+
+        LocalDateTime reservationTime = reservation.getReservationDate();
+        LocalDateTime limitToComplete = reservationTime.plusHours(2);
+
+        AppUser client = reservation.getUser();
+
+        if (LocalDateTime.now().isAfter(limitToComplete)) {
+
+            client.setStatus(UserStatus.BANNED);
+
+            appUserRepository.save(client);
+        }
+
+        reservation.setStatus(ReservationStatus.COMPLETED);
+
+        reservationRepository.save(reservation);
     }
 }

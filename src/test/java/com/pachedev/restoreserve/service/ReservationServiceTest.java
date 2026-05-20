@@ -73,7 +73,7 @@ public class ReservationServiceTest {
         when(appUserRepository.findByUsername("tana")).thenReturn(Optional.of(user));
 
         LocalDateTime pastTime = LocalDateTime.now().minusHours(1);
-        ReservationRequestDTO dto = new ReservationRequestDTO(1L, pastTime, 4);
+        ReservationRequestDTO dto = new ReservationRequestDTO(1L, pastTime, 4, false);
 
         assertThrows(BusinessLogicException.class, () -> reservationService.create(dto, "tana"));
     }
@@ -86,7 +86,7 @@ public class ReservationServiceTest {
     void createReservationExceedingPax() {
 
         LocalDateTime date = LocalDateTime.now().plusDays(1);
-        ReservationRequestDTO dto = new ReservationRequestDTO(1L, date, 20);
+        ReservationRequestDTO dto = new ReservationRequestDTO(1L, date, 20, false);
 
         AppUser user = new AppUser();
         user.setId(1L);
@@ -133,7 +133,7 @@ public class ReservationServiceTest {
         when(appUserRepository.findByUsername("tana")).thenReturn(Optional.of(user));
 
         LocalDateTime pastTime = LocalDateTime.now().minusHours(1);
-        ReservationRequestDTO dto = new ReservationRequestDTO(1L, pastTime, 4);
+        ReservationRequestDTO dto = new ReservationRequestDTO(1L, pastTime, 4, false);
 
         assertThrows(BannedUserException.class, () -> reservationService.create(dto, "tana"));
     }
