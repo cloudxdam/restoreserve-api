@@ -139,4 +139,14 @@ public class RestaurantTableService {
 
         return response;
     }
+
+    /**
+     * Devuelve las mesas filtrando por estado y capacidad.
+     */
+    public List<RestaurantTableResponseDTO> findByStatusAndMaxPaxGreaterThanEqual(TableStatus status, Integer maxPax) {
+        List<RestaurantTable> tables = restaurantTableRepository.findByStatusAndMaxPaxGreaterThanEqual(status, maxPax);
+        List<RestaurantTableResponseDTO> response = toResponseList(tables);
+
+        return response;
+    }
 }

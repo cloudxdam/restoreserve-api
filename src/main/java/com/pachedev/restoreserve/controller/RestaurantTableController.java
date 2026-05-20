@@ -114,4 +114,14 @@ public class RestaurantTableController {
             @RequestParam TableLocation location, @RequestParam TableStatus status) {
         return ResponseEntity.ok(restaurantTableService.findByLocationAndStatus(location, status));
     }
+
+    /**
+     * Devuelve las mesas filtradas por estado y capacidad.
+     * 'localhost:8080/api/v1/tables/available?status=AVAILABLE&maxPax=2'
+     */
+    @GetMapping("/available")
+    public ResponseEntity<List<RestaurantTableResponseDTO>> findByStatusAndMaxPax(
+            @RequestParam TableStatus status, @RequestParam Integer maxPax) {
+        return ResponseEntity.ok(restaurantTableService.findByStatusAndMaxPaxGreaterThanEqual(status, maxPax));
+    }
 }

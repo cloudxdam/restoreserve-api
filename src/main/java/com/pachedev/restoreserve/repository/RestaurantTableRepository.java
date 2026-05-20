@@ -18,4 +18,5 @@ public interface RestaurantTableRepository extends JpaRepository<RestaurantTable
 
     List<RestaurantTable> findByLocationAndStatus(TableLocation location, TableStatus status);
 
+    List<RestaurantTable> findByStatusAndMaxPaxGreaterThanEqual(TableStatus status, Integer maxPax);
 }
