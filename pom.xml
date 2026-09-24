@@ -11,14 +11,16 @@
 	<groupId>com.pachedev</groupId>
 	<artifactId>restoreserve</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
-	<url/>
+	<name>RestoReserve API</name>
+	<description>Spring Boot REST API for managing restaurant tables, reservations, and JWT-based authentication.</description>
+	<url>https://github.com/cloudxdam/restoreserve-api</url>
 	<licenses>
 		<license/>
 	</licenses>
 	<developers>
-		<developer/>
+		<developer>
+			<name>Daniel Pacheco</name>
+		</developer>
 	</developers>
 	<scm>
 		<connection/>
