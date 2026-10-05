@@ -181,9 +181,9 @@ public class ReservationServiceTest {
 
         reservationService.cancelReservation(reservation.getId());
 
-        assertEquals(client.getPenalizationPoints(), 2);
-        assertEquals(client.getStatus(), UserStatus.ACTIVE);
-        assertEquals(reservation.getStatus(), ReservationStatus.CANCELLED);
+        assertEquals(2, client.getPenalizationPoints());
+        assertEquals(UserStatus.ACTIVE, client.getStatus());
+        assertEquals(ReservationStatus.CANCELLED, reservation.getStatus());
     }
 
     /**
@@ -230,7 +230,7 @@ public class ReservationServiceTest {
 
         reservationService.cancelReservation(reservation.getId());
 
-        assertEquals(client.getPenalizationPoints(), 8);
-        assertEquals(client.getStatus(), UserStatus.BANNED);
+        assertEquals(8, client.getPenalizationPoints());
+        assertEquals(UserStatus.BANNED, client.getStatus());
     }
 }

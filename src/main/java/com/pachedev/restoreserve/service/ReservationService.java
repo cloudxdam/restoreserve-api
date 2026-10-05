@@ -24,6 +24,7 @@ import com.pachedev.restoreserve.repository.ReservationRepository;
 import com.pachedev.restoreserve.repository.RestaurantTableRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +41,7 @@ public class ReservationService {
      * - que una mesa previamente reservada estará ocupada por dos horas, por lo
      * que la hora de reserva solicitada no entrará en conflicto.
      */
+    @Transactional
     public ReservationResponseDTO create(ReservationRequestDTO dto, String currentUsername) {
 
         AppUser user = appUserRepository.findByUsername(currentUsername)
@@ -192,6 +194,7 @@ public class ReservationService {
      * al cliente.
      * Cuando acumule más de 6 puntos, su estado pasará de ACTIVE a BANNED.
      */
+    @Transactional
     public void cancelReservation(Long id) {
         Reservation reservation = getReservation(id);
 
@@ -258,6 +261,7 @@ public class ReservationService {
      * Modifica el estado de una reserva a COMPLETED si han pasado más de dos horas
      * de la hora de la reserva.
      */
+    @Transactional
     public void completeReservation(Long id) {
 
         Reservation reservation = getReservation(id);
