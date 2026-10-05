@@ -107,7 +107,7 @@ public class ReservationServiceTest {
         table.setLocation(TableLocation.SALON);
 
         when(appUserRepository.findByUsername("tana")).thenReturn(Optional.of(user));
-        when(tableRepository.findById(1L)).thenReturn(Optional.of(table));
+        when(tableRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(table));
 
         assertThrows(BusinessLogicException.class, () -> reservationService.create(dto, "tana"));
     }
