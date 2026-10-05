@@ -122,6 +122,20 @@ Custom exceptions include:
 - Java 17
 - Maven Wrapper included in the project
 
+### Configure the JWT secret
+
+The application signs its tokens with a key read from the `JWT_SECRET` environment
+variable. The key is not stored in the repository, so the application will not start
+until you provide one.
+
+Create a local `.env` file (already ignored by git) with a freshly generated key:
+
+```bash
+printf 'JWT_SECRET=%s\n' "$(openssl rand -base64 64)" > .env
+```
+
+The required variables are documented in `.env.example`. Never commit `.env`.
+
 ### Start the application
 
 Linux / macOS:
@@ -222,11 +236,9 @@ Run the test suite with:
 - Demo data is loaded from `data.sql`.
 - JWT authentication is implemented with JJWT and Spring Security.
 - The project is currently focused on local execution and portfolio presentation.
-- Sensitive configuration should be externalized before production deployment.
 
 ## Future Improvements
 
-- Externalize JWT secrets and sensitive configuration.
 - Add more controller, security, and integration tests.
 - Improve transaction boundaries and testability in the reservation service.
 - Add database profiles for H2 and PostgreSQL.
