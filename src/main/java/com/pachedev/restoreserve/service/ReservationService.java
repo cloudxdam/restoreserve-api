@@ -1,13 +1,5 @@
 package com.pachedev.restoreserve.service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import com.pachedev.restoreserve.dto.ReservationRequestDTO;
 import com.pachedev.restoreserve.dto.ReservationResponseDTO;
 import com.pachedev.restoreserve.exception.BannedUserException;
@@ -22,9 +14,15 @@ import com.pachedev.restoreserve.model.enums.UserStatus;
 import com.pachedev.restoreserve.repository.AppUserRepository;
 import com.pachedev.restoreserve.repository.ReservationRepository;
 import com.pachedev.restoreserve.repository.RestaurantTableRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +54,7 @@ public class ReservationService {
             throw new BusinessLogicException("La fecha y hora no pueden ser anteriores a la actual");
         }
 
-        RestaurantTable table = tableRepository.findById(dto.tableId())
+        RestaurantTable table = tableRepository.findByIdForUpdate(dto.tableId())
                 .orElseThrow(() -> new ResourceNotFoundException("Mesa con id " + dto.tableId() + " no encontrada"));
 
         if (dto.isVip() == true) {
