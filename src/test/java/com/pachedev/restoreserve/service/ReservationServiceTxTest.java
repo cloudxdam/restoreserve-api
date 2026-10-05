@@ -1,22 +1,7 @@
 package com.pachedev.restoreserve.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-
-import java.time.LocalDateTime;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.TestConstructor;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
-
 import com.pachedev.restoreserve.dto.ReservationRequestDTO;
+import com.pachedev.restoreserve.exception.BusinessLogicException;
 import com.pachedev.restoreserve.model.entity.AppUser;
 import com.pachedev.restoreserve.model.entity.Reservation;
 import com.pachedev.restoreserve.model.entity.RestaurantTable;
@@ -25,6 +10,19 @@ import com.pachedev.restoreserve.model.enums.UserStatus;
 import com.pachedev.restoreserve.repository.AppUserRepository;
 import com.pachedev.restoreserve.repository.ReservationRepository;
 import com.pachedev.restoreserve.repository.RestaurantTableRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestConstructor;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+
+import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 
 @SpringBootTest(properties = "spring.datasource.url=jdbc:h2:mem:txtestdb")
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
@@ -105,5 +103,20 @@ class ReservationServiceTxTest {
         AppUser after = appUserRepository.findById(SEED_USER_ID).orElseThrow();
         assertEquals(0, after.getPenalizationPoints(),
                 "los puntos deben revertirse si la cancelacion no se completa");
+    }
+
+    @Test
+    void createRejectsDoubleBookingOfSameSlot() {
+        ReservationRequestDTO slot = new ReservationRequestDTO(
+                SEED_TABLE_ID,
+                LocalDateTime.now().plusDays(45).withHour(21).withMinute(0).withSecond(0).withNano(0),
+                2,
+                false);
+
+        reservationService.create(slot, "armymoves");
+
+        assertThrows(BusinessLogicException.class,
+                () -> reservationService.create(slot, "armymoves"),
+                "una segunda reserva en el mismo hueco debe ser rechazada");
     }
 }
