@@ -58,7 +58,7 @@ public class ReservationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Mesa con id " + dto.tableId() + " no encontrada"));
 
         if (dto.isVip() == true) {
-            boolean isVipUser = reservationRepository.findByStatus(ReservationStatus.CONFIRMED).size() > 3;
+            boolean isVipUser = reservationRepository.findByUserIdAndStatus(user.getId(), ReservationStatus.CONFIRMED).size() > 3;
 
             if (!isVipUser) {
                 throw new NotVipUserException("Sólo clientes habituales pueden reservar mesas VIP");
