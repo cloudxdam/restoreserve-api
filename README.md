@@ -1,5 +1,7 @@
 # RestoReserve API
 
+[![CI](https://github.com/cloudxdam/restoreserve-api/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/cloudxdam/restoreserve-api/actions/workflows/ci.yml)
+
 RestoReserve API is a Spring Boot REST API for managing restaurant tables, reservations, and user access with JWT authentication.
 
 The project started as an academic project and is being refined with a focus on backend fundamentals: layered architecture, validation, security, persistence, testing, and business rules.
