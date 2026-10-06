@@ -2,6 +2,7 @@ package com.pachedev.restoreserve.service;
 
 import com.pachedev.restoreserve.dto.ReservationRequestDTO;
 import com.pachedev.restoreserve.exception.BusinessLogicException;
+import com.pachedev.restoreserve.exception.NotVipUserException;
 import com.pachedev.restoreserve.model.entity.AppUser;
 import com.pachedev.restoreserve.model.entity.Reservation;
 import com.pachedev.restoreserve.model.entity.RestaurantTable;
@@ -118,5 +119,18 @@ class ReservationServiceTxTest {
         assertThrows(BusinessLogicException.class,
                 () -> reservationService.create(slot, "armymoves"),
                 "una segunda reserva en el mismo hueco debe ser rechazada");
+    }
+
+    @Test
+    void createRejectsVipTableForNonHabitualUser() {
+        ReservationRequestDTO vip = new ReservationRequestDTO(
+                SEED_TABLE_ID,
+                LocalDateTime.now().plusDays(60).withHour(19).withMinute(0).withSecond(0).withNano(0),
+                2,
+                true);
+
+        assertThrows(NotVipUserException.class,
+                () -> reservationService.create(vip, "admin"),
+                "un usuario sin historial no debe poder reservar mesa VIP");
     }
 }
