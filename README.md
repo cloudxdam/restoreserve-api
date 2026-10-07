@@ -4,7 +4,7 @@
 
 RestoReserve API is a Spring Boot REST API for managing restaurant tables, reservations, and user access with JWT authentication.
 
-The project started as an academic project and is being refined with a focus on backend fundamentals: layered architecture, validation, security, persistence, testing, and business rules.
+The project started as an academic project and has since been refined with a focus on backend fundamentals: layered architecture, validation, security, persistence, testing, and business rules.
 
 ## Tech Stack
 
@@ -13,14 +13,16 @@ The project started as an academic project and is being refined with a focus on 
 - Spring Web
 - Spring Security
 - Spring Data JPA
-- H2 Database
+- H2 Database (default profile)
+- PostgreSQL (`postgres` profile, optional)
 - JJWT
 - Spring Validation
-- Springdoc OpenAPIz
+- Springdoc OpenAPI
 - Lombok
 - JUnit 5 + Mockito
 - Spring Security Test
 - Maven
+- Docker Compose
 
 ## Main Features
 
@@ -123,22 +125,25 @@ Custom exceptions include:
 
 - Java 17
 - Maven Wrapper included in the project
+- Docker (only for the optional PostgreSQL profile)
 
-### Configure the JWT secret
+### Configure the environment
 
 The application signs its tokens with a key read from the `JWT_SECRET` environment
-variable. The key is not stored in the repository, so the application will not start
-until you provide one.
+variable. Neither the key nor the database credentials are stored in the repository,
+so the application will not start until you provide them.
 
-Create a local `.env` file (already ignored by git) with a freshly generated key:
+Create a local `.env` file (already ignored by git) with freshly generated values:
 
 ```bash
-printf 'JWT_SECRET=%s\n' "$(openssl rand -base64 64)" > .env
+printf 'JWT_SECRET=%s\nPOSTGRES_DB=restoreserve\nPOSTGRES_USER=restoreserve\nPOSTGRES_PASSWORD=%s\n' \
+  "$(openssl rand -base64 64)" "$(openssl rand -hex 16)" > .env
 ```
 
-The required variables are documented in `.env.example`. Never commit `.env`.
+The command overwrites any existing `.env`. The required variables are documented in
+`.env.example`. Never commit `.env`.
 
-### Start the application
+### Start the application (H2, default)
 
 Linux / macOS:
 
@@ -152,11 +157,29 @@ Windows:
 mvnw.cmd spring-boot:run
 ```
 
-The application uses an in-memory H2 database with seed data loaded from:
+### Start the application with PostgreSQL (optional)
 
-```text
-src/main/resources/data.sql
+Start the database and wait until it reports `healthy`:
+
+```bash
+docker compose up -d
+docker compose ps
 ```
+
+Then start the application:
+
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.profiles=postgres
+```
+
+Stop the database when you are done:
+
+```bash
+docker compose down
+```
+
+Data lives in a named volume and survives container restarts. Use `docker compose down -v`
+only if you want to delete it.
 
 ## Swagger UI
 
@@ -234,17 +257,16 @@ Run the test suite with:
 
 ## Notes About the Current Setup
 
-- H2 is used as a lightweight local development database.
-- Demo data is loaded from `data.sql`.
+- The default profile runs on an in-memory H2 database; the optional `postgres` profile runs on PostgreSQL through Docker Compose.
+- Demo data is seeded on startup by `config/DataSeeder` and is skipped when users already exist, so restarting the application does not duplicate it.
 - JWT authentication is implemented with JJWT and Spring Security.
 - The project is currently focused on local execution and portfolio presentation.
 
 ## Future Improvements
 
 - Add more controller, security, and integration tests.
-- Improve transaction boundaries and testability in the reservation service.
-- Add database profiles for H2 and PostgreSQL.
-- Improve repository and development workflow.
+- Containerize the API with a Dockerfile and an `app` service in compose.
+- Replace `ddl-auto=update` with Flyway migrations.
 - Add production-oriented configuration and observability.
 
 ## Why This Project Matters
@@ -271,4 +293,4 @@ It provides a foundation for demonstrating junior backend development skills wit
 
 **Daniel Pacheco**
 
-GitHub: `cloudxdam`
+GitHub: [cloudxdam](https://github.com/cloudxdam)
