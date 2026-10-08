@@ -1,14 +1,15 @@
 package com.pachedev.restoreserve.exception;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -65,5 +66,16 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse("NOT_VIP_USER", ex.getMessage(), LocalDateTime.now());
 
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    /**
+     * Maneja fallos de autenticación (credenciales incorrectas) devolviendo 401
+     * en lugar de 404/409, para no revelar si el usuario existe o no.
+     */
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthentication(AuthenticationException ex) {
+        ErrorResponse error = new ErrorResponse("UNAUTHORIZED", ex.getMessage(), LocalDateTime.now());
+
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 }

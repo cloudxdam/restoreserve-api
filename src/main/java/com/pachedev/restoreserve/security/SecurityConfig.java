@@ -1,5 +1,7 @@
 package com.pachedev.restoreserve.security;
 
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,8 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import lombok.RequiredArgsConstructor;
 
 /**
  * Configuración de seguridad de la API:
@@ -38,7 +38,7 @@ public class SecurityConfig {
     /**
      * Cadena de filtros de Seguridad de la API, los controles automáticos por donde
      * pasará cada petición HTTP:
-     * 
+     * <p>
      * 1. Desactiva CSRF (no la necesitamos, nuestra API es stateless gracias al
      * uso de tokens JWT).
      * 2. definimos que la política de sesión es stateless (no guardará la
@@ -48,9 +48,13 @@ public class SecurityConfig {
      * ADMIN.
      * 5. declaramos los endpoints a los que pueden acceder los que tengan rol USER
      * o ADMIN.
-     * 6. anyRequest().authenticated() .> cualquier otra ruta requiere usuario
+     * 6. anyRequest().authenticated() -> cualquier otra ruta requiere usuario
      * autenticado.
-     * 7. addFilterBefore -> antes de pasar el filtro de Spring Security debe pasar
+     * 7. exceptionHandling -> si una petición llega sin token devolvemos 401 (no
+     * autenticado); si llega autenticada pero con un rol insuficiente, 403
+     * (acceso denegado), en lugar del 403 genérico que devuelve Spring Security
+     * por defecto para ambos casos.
+     * 8. addFilterBefore -> antes de pasar el filtro de Spring Security debe pasar
      * el que hemos definido nosotros, que leerá el token y autenticará al usuario
      */
     @Bean
@@ -66,6 +70,8 @@ public class SecurityConfig {
                                 .hasRole("ADMIN")
                                 .requestMatchers("/api/v1/reservations/**").hasAnyRole("USER", "ADMIN")
                                 .anyRequest().authenticated())
+                .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint((request, response, authException) ->
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
