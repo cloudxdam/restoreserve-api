@@ -27,7 +27,6 @@ class ReservationControllerTest {
     private final MockMvc mockMvc;
 
     /**
-
      * Inicia sesión con las credenciales indicadas y obtiene el JWT de la respuesta.
      *
      * @param username nombre de usuario
