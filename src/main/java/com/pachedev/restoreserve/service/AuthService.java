@@ -1,20 +1,18 @@
 package com.pachedev.restoreserve.service;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.pachedev.restoreserve.dto.AuthRequestDTO;
 import com.pachedev.restoreserve.dto.AuthResponseDTO;
 import com.pachedev.restoreserve.dto.RegisterUserRequestDTO;
 import com.pachedev.restoreserve.exception.BusinessLogicException;
-import com.pachedev.restoreserve.exception.ResourceNotFoundException;
 import com.pachedev.restoreserve.model.entity.AppUser;
 import com.pachedev.restoreserve.model.enums.UserRole;
 import com.pachedev.restoreserve.model.enums.UserStatus;
 import com.pachedev.restoreserve.repository.AppUserRepository;
 import com.pachedev.restoreserve.security.JwtService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 /**
  * Servicio encargado de autenticar usuarios mediante JWT.
@@ -38,10 +36,10 @@ public class AuthService {
     public AuthResponseDTO login(AuthRequestDTO dto) {
 
         AppUser user = appUserRepository.findByUsername(dto.username())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario " + dto.username() + " no encontrado"));
+                .orElseThrow(() -> new BadCredentialsException("Usuario o contraseña incorrectos"));
 
         if (!passwordEncoder.matches(dto.password(), (user.getPassword()))) {
-            throw new BusinessLogicException("Credenciales no válidas");
+            throw new BadCredentialsException("Usuario o contraseña incorrectos");
         }
 
         String token = jwtService.generateToken(user.getUsername());

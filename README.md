@@ -1,6 +1,6 @@
 # RestoReserve API
 
-[![CI](https://github.com/cloudxdam/restoreserve-api/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/cloudxdam/restoreserve-api/actions/workflows/ci.yml)
+[![CI](https://github.com/cloudxdam/restoreserve-api/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/cloudxdam/restoreserve-api/actions/workflows/ci.yml)
 
 RestoReserve API is a Spring Boot REST API for managing restaurant tables, reservations, and user access with JWT authentication.
 
@@ -79,11 +79,11 @@ The reservation service implements several domain rules:
 
 ### Reservations
 
-- `POST /api/v1/reservations` — create a reservation for the authenticated user
-- `GET /api/v1/reservations` — list reservations accessible to the current user
-- `GET /api/v1/reservations/{id}` — get a reservation by ID
-- `GET /api/v1/reservations/status/{status}` — filter reservations by status
-- `DELETE /api/v1/reservations/{id}` — cancel a reservation
+- `POST /api/v1/reservations` — create a reservation for the authenticated user (`USER`, `ADMIN`)
+- `GET /api/v1/reservations` — list reservations accessible to the current user (`USER`, `ADMIN`)
+- `GET /api/v1/reservations/{id}` — get a reservation by ID (`USER`, `ADMIN`)
+- `GET /api/v1/reservations/status/{status}` — filter reservations by status (`USER`, `ADMIN`)
+- `DELETE /api/v1/reservations/{id}` — cancel a reservation (`USER`, `ADMIN`)
 
 ### Restaurant Tables
 
@@ -246,8 +246,9 @@ The project uses:
 - Mockito
 - Spring Boot Test
 - Spring Security Test
+- MockMvc
 
-Current tests cover application context loading and reservation-service business rules, including validation, banned users, reservation ownership, cancellation, penalization, and automatic banning.
+Current tests cover three layers: the application context, reservation-service business rules (validation, banned users, reservation ownership, cancellation, penalization, and automatic banning), and the HTTP layer through MockMvc with real JWTs (login and registration responses, failed-login status codes, role-based access control, per-user data isolation, and validation errors).
 
 Run the test suite with:
 
@@ -264,7 +265,6 @@ Run the test suite with:
 
 ## Future Improvements
 
-- Add more controller, security, and integration tests.
 - Containerize the API with a Dockerfile and an `app` service in compose.
 - Replace `ddl-auto=update` with Flyway migrations.
 - Add production-oriented configuration and observability.
@@ -284,7 +284,7 @@ It demonstrates practical backend concepts including:
 - JPA persistence
 - Business-rule implementation
 - Centralized exception handling
-- Unit testing and mocking
+- Unit and integration testing
 - API documentation with OpenAPI
 
 It provides a foundation for demonstrating junior backend development skills with Java and Spring Boot while continuing to evolve toward a more production-oriented architecture.
