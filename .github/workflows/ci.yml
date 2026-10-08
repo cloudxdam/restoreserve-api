@@ -13,7 +13,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      JWT_SECRET: ci-only-secret-not-for-production-use-0123456789
+      JWT_SECRET: Y2ktb25seS1qd3Qtc2VjcmV0LWZvci1yZXN0b3Jlc2VydmUtdGVzdHMtMDEyMzQ1Njc4OQ==
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
